@@ -1,0 +1,13 @@
+.aider*
+.venv*
+*.pyc
+__pycache__/
+temp/
+
+# System files
+.DS_Store
+
+# Syncthing
+.stignore
+.stglobalignore
+.stfolder
