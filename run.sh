@@ -66,11 +66,11 @@ fi
 
 # Step 3: Convert enhanced WAV files to target format and quality
 if [[ "$FORMAT" != "flac" && "$FORMAT" != "wav" ]]; then
-    echo "Step 3: Converting enhanced WAV files to $FORMAT format at $QUALITY quality..."
+    echo "Step 3: Converting enhanced WAV files to $FORMAT format at $QUALITY quality (with metadata)..."
 else
-    echo "Step 3: Converting enhanced WAV files to $FORMAT format..."
+    echo "Step 3: Converting enhanced WAV files to $FORMAT format (with metadata)..."
 fi
-python3 scripts/convert_wav_to_format.py temp/wav_output "$TARGET_DIR" "$FORMAT" "$QUALITY"
+python3 scripts/convert_wav_to_format.py temp/wav_output "$TARGET_DIR" "$FORMAT" "$QUALITY" "$SOURCE_DIR"
 
 # Check if final conversion was successful
 if [ ! -d "$TARGET_DIR" ] || [ -z "$(ls -A "$TARGET_DIR")" ]; then

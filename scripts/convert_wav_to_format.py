@@ -9,8 +9,12 @@ import sys
 import subprocess
 from pathlib import Path
 
+from helpers.metadata import load_metadata_file, find_original_file, build_metadata_args
 
-def convert_wav_to_format(wav_dir, output_dir, format="flac", quality="256k"):
+
+def convert_wav_to_format(
+    wav_dir, output_dir, format="flac", quality="256k", source_dir=None
+):
     """Convert WAV files to specified format and quality using ffmpeg."""
 
     # Validate input directory
@@ -46,9 +50,21 @@ def convert_wav_to_format(wav_dir, output_dir, format="flac", quality="256k"):
             output_path = Path(output_dir) / output_filename
             counter += 1
 
-        # Build ffmpeg command based on format
-        cmd = ["ffmpeg", "-i", input_path, "-y"]
+        # Load metadata and find original file for artwork
+        metadata = load_metadata_file(wav_file)
+        original_file = find_original_file(wav_file, source_dir) if source_dir else None
 
+        # Build ffmpeg command based on format
+        cmd = ["ffmpeg", "-i", input_path]
+
+        # Add metadata arguments (this may add additional input files)
+        metadata_args = build_metadata_args(metadata, original_file)
+        cmd.extend(metadata_args)
+
+        # Add overwrite flag
+        cmd.append("-y")
+
+        # Add format-specific encoding options
         if format.lower() == "mp3":
             cmd.extend(["-codec:a", "libmp3lame", "-b:a", quality])
         elif format.lower() == "aac":
@@ -67,6 +83,7 @@ def convert_wav_to_format(wav_dir, output_dir, format="flac", quality="256k"):
             print(f"Unsupported format: {format}")
             continue
 
+        # Add output file
         cmd.append(str(output_path))
 
         try:
@@ -96,10 +113,10 @@ def convert_wav_to_format(wav_dir, output_dir, format="flac", quality="256k"):
 def main():
     if len(sys.argv) < 3:
         print(
-            "Usage: python3 scripts/convert_wav_to_format.py <wav_dir> <output_dir> [format] [quality]"
+            "Usage: python3 scripts/convert_wav_to_format.py <wav_dir> <output_dir> [format] [quality] [source_dir]"
         )
         print(
-            "Example: python3 scripts/convert_wav_to_format.py ./temp/wav_output ./output mp3 256k"
+            "Example: python3 scripts/convert_wav_to_format.py ./temp/wav_output ./output mp3 256k ./source"
         )
         sys.exit(1)
 
@@ -107,8 +124,9 @@ def main():
     output_dir = sys.argv[2]
     format = sys.argv[3] if len(sys.argv) > 3 else "flac"
     quality = sys.argv[4] if len(sys.argv) > 4 else "256k"
+    source_dir = sys.argv[5] if len(sys.argv) > 5 else None
 
-    convert_wav_to_format(wav_dir, output_dir, format, quality)
+    convert_wav_to_format(wav_dir, output_dir, format, quality, source_dir)
 
 
 if __name__ == "__main__":

@@ -10,6 +10,8 @@ import subprocess
 import argparse
 from pathlib import Path
 
+from helpers.metadata import extract_metadata, save_metadata_file
+
 # Common audio file extensions
 AUDIO_EXTENSIONS = {
     ".mp3",
@@ -102,6 +104,10 @@ def convert_audio_files_to_wav(source_dir):
             print(f"File already exists: {output_file.name}, skipping conversion.")
             success_count += 1
             continue
+
+        # Extract and save metadata first
+        metadata = extract_metadata(audio_file)
+        save_metadata_file(metadata, output_file)
 
         # Process file
         if audio_file.suffix.lower() == ".wav":
