@@ -4,10 +4,11 @@ This project provides a complete workflow for enhancing audio files using resemb
 
 ## Overview
 
-The workflow consists of three main steps:
-1. Convert input audio files to WAV format
+The workflow consists of four main steps:
+1. Convert input audio file(s) to WAV format
 2. Enhance the audio using resemble-enhance
 3. Convert the enhanced audio to the desired output format
+4. Save (together with original metadata) the enhanced audio to destination directory
 
 ## Usage
 
@@ -55,11 +56,12 @@ The workflow consists of three main steps:
 ## Performance
 
 Processing time depends on your hardware. As a reference:
-- **GeForce RTX 3060 Ti**: Approximately 1 hour of processing time per 1 hour of audio
+- **GPU: GeForce RTX 3060 Ti**: Approximately 1 hour of processing time per hour of audio
+- **CPU: 2,3 GHz I’m 8-Core intel Core i9**: Approximately 11 hours of processing time per hour of audio
 
 ## Requirements
 
-- **Linux operating system** (this script uses bash and Linux-specific commands)
+- **Linux operating system or wsl** (this script uses bash and Linux-specific commands)
 - Python 3.10
 - ffmpeg (for audio conversion)
 - resemble-enhance (for audio enhancement)
